@@ -13,6 +13,30 @@ import {
 
 const MedicalContext = createContext(undefined);
 
+// Helper to parse "08:00 AM" into minutes since midnight
+const parseTimeToMinutes = (timeStr) => {
+  if (!timeStr) return null;
+  const match = timeStr.trim().match(/^(\d+):(\d+)\s*(AM|PM)$/i);
+  if (!match) return null;
+  let hrs = parseInt(match[1], 10);
+  const mins = parseInt(match[2], 10);
+  const ampm = match[3].toUpperCase();
+  if (ampm === 'PM' && hrs < 12) hrs += 12;
+  if (ampm === 'AM' && hrs === 12) hrs = 0;
+  return hrs * 60 + mins;
+};
+
+// Helper to convert minutes since midnight to AM/PM string
+const formatMinutesToTime = (minutes) => {
+  if (minutes === null || minutes === undefined) return '--';
+  const hrs = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  const ampm = hrs >= 12 ? 'PM' : 'AM';
+  const displayHrs = hrs % 12 || 12;
+  const displayMins = mins < 10 ? '0' + mins : mins;
+  return `${displayHrs}:${displayMins} ${ampm}`;
+};
+
 export const MedicalProvider = ({ children }) => {
   const [patients, setPatients] = useState(INITIAL_PATIENTS);
   const [medicines, setMedicines] = useState(INITIAL_MEDICINES);
@@ -119,6 +143,72 @@ export const MedicalProvider = ({ children }) => {
     };
   }, []);
 
+  // Sync mock medicines and today's logs with Supabase dbSchedule
+  useEffect(() => {
+    if (dbSchedule.length === 0) return;
+
+    const slotNameMap = {
+      1: { name: 'Atorvastatin', dose: '10mg' },
+      2: { name: 'Metformin', dose: '500mg' },
+      3: { name: 'Low-Dose Aspirin', dose: '81mg' },
+      4: { name: 'Lisinopril', dose: '10mg' },
+      5: { name: 'Amlodipine', dose: '5mg' },
+      6: { name: 'Gabapentin', dose: '300mg' },
+      7: { name: 'Levothyroxine', dose: '50mcg' },
+      8: { name: 'Omeprazole', dose: '20mg' },
+      9: { name: 'Losartan', dose: '50mg' },
+      10: { name: 'Albuterol', dose: '90mcg' },
+      11: { name: 'Sertraline', dose: '50mg' },
+      12: { name: 'Metoprolol', dose: '25mg' },
+      13: { name: 'Amoxicillin', dose: '500mg' },
+      14: { name: 'Furosemide', dose: '20mg' },
+      15: { name: 'Hydrochlorothiazide', dose: '12.5mg' }
+    };
+
+    const syncedMedicines = dbSchedule
+      .filter((row) => row.minutes !== null)
+      .map((row) => {
+        const details = slotNameMap[row.section] || { name: `Active Med (Slot ${row.section})`, dose: '1 Unit' };
+        return {
+          id: `MED-SLOT-${row.section}`,
+          name: details.name,
+          dose: details.dose,
+          boxSlot: row.section,
+          exactTime: formatMinutesToTime(row.minutes),
+          repeatDaily: true,
+          morning: row.minutes < 720,
+          afternoon: row.minutes >= 720 && row.minutes < 1080,
+          night: row.minutes >= 1080,
+          patientId: 'PAT-8802'
+        };
+      });
+
+    setMedicines(syncedMedicines);
+
+    // Sync today's logs
+    const todayStr = new Date().toISOString().split('T')[0];
+    setMedicineLogs((prevLogs) => {
+      return syncedMedicines.map((med) => {
+        const existingLog = prevLogs.find((l) => l.medicineId === med.id && l.date === todayStr);
+        return {
+          id: existingLog?.id || `LOG-DB-${med.boxSlot}`,
+          patientId: med.patientId,
+          medicineId: med.id,
+          medicineName: med.name,
+          dose: med.dose,
+          slot: med.morning ? 'Morning' : med.afternoon ? 'Afternoon' : 'Night',
+          scheduledTime: med.exactTime,
+          takenTime: existingLog?.takenTime || null,
+          status: existingLog?.status || 'Upcoming',
+          delayMinutes: existingLog?.delayMinutes || null,
+          remarks: existingLog?.remarks || null,
+          date: todayStr,
+          boxSlot: med.boxSlot
+        };
+      });
+    });
+  }, [dbSchedule]);
+
   // Dynamic Telemetry Simulation: Fluctuate vitals in real-time
   useEffect(() => {
     const interval = setInterval(() => {
@@ -160,86 +250,97 @@ export const MedicalProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // 1. Medicine Actions
-  const addMedicine = (medicine) => {
-    const newMed = {
-      ...medicine,
-      id: `MED-${Math.floor(100 + Math.random() * 900)}`,
-      boxSlot: medicines.length + 1
-    };
-    setMedicines((prev) => [...prev, newMed]);
+  // 1. Medicine Actions connected to Supabase
+  const addMedicine = async (medicine) => {
+    const slotNumber = parseInt(medicine.boxSlot, 10) || 1;
+    const parsedMinutes = parseTimeToMinutes(medicine.exactTime);
 
-    // Create an upcoming log for today if daily
-    if (medicine.repeatDaily) {
-      const slots = [];
-      if (medicine.morning) slots.push('Morning');
-      if (medicine.afternoon) slots.push('Afternoon');
-      if (medicine.night) slots.push('Night');
+    try {
+      const { error } = await supabase
+        .from('schedule')
+        .update({ minutes: parsedMinutes })
+        .eq('section', slotNumber);
 
-      const times = medicine.exactTime.split(',');
+      if (error) throw error;
 
-      slots.forEach((slot, index) => {
-        const timeStr = times[index] ? times[index].trim() : medicine.exactTime;
-        const newLog = {
-          id: `LOG-${Math.floor(200 + Math.random() * 800)}`,
-          patientId: medicine.patientId,
-          medicineId: newMed.id,
-          medicineName: newMed.name,
-          dose: newMed.dose,
-          slot: slot,
-          scheduledTime: timeStr,
-          takenTime: null,
-          status: 'Upcoming',
-          delayMinutes: null,
-          remarks: null,
-          date: new Date().toISOString().split('T')[0]
-        };
-        setMedicineLogs((prev) => [newLog, ...prev]);
-      });
-    }
+      // Refresh schedule locally
+      const { data: updatedSchedule } = await supabase
+        .from('schedule')
+        .select('*')
+        .order('section', { ascending: true });
+      
+      if (updatedSchedule) {
+        setDbSchedule(updatedSchedule);
+      }
 
-    // Trigger info notification
-    addNotification({
-      patientId: medicine.patientId,
-      title: 'New Medicine Scheduled',
-      message: `${medicine.name} has been added by your Guardian.`,
-      type: 'Info'
-    });
-  };
-
-  const editMedicine = (id, updatedFields) => {
-    setMedicines((prev) =>
-      prev.map((med) => (med.id === id ? { ...med, ...updatedFields } : med))
-    );
-    // Sync logs name / dose for today
-    setMedicineLogs((prev) =>
-      prev.map((log) =>
-        log.medicineId === id && log.status === 'Upcoming'
-          ? {
-              ...log,
-              medicineName: updatedFields.name || log.medicineName,
-              dose: updatedFields.dose || log.dose
-            }
-          : log
-      )
-    );
-  };
-
-  const deleteMedicine = (id) => {
-    const medToDelete = medicines.find((m) => m.id === id);
-    setMedicines((prev) => prev.filter((med) => med.id !== id));
-    // Remove upcoming logs for this medicine today
-    setMedicineLogs((prev) =>
-      prev.filter((log) => !(log.medicineId === id && log.status === 'Upcoming'))
-    );
-
-    if (medToDelete) {
       addNotification({
-        patientId: medToDelete.patientId,
-        title: 'Medication Cancelled',
-        message: `${medToDelete.name} was removed from your schedule.`,
+        patientId: medicine.patientId,
+        title: 'Medicine Scheduled in Box',
+        message: `${medicine.name} (Slot ${slotNumber}) has been scheduled.`,
         type: 'Info'
       });
+    } catch (err) {
+      console.error('Error writing to Supabase schedule:', err);
+    }
+  };
+
+  const editMedicine = async (id, updatedFields) => {
+    const slotNumber = parseInt(id.replace('MED-SLOT-', ''), 10);
+    const parsedMinutes = updatedFields.exactTime ? parseTimeToMinutes(updatedFields.exactTime) : null;
+
+    try {
+      if (parsedMinutes !== null) {
+        const { error } = await supabase
+          .from('schedule')
+          .update({ minutes: parsedMinutes })
+          .eq('section', slotNumber);
+        
+        if (error) throw error;
+      }
+
+      // Refresh schedule locally
+      const { data: updatedSchedule } = await supabase
+        .from('schedule')
+        .select('*')
+        .order('section', { ascending: true });
+      
+      if (updatedSchedule) {
+        setDbSchedule(updatedSchedule);
+      }
+    } catch (err) {
+      console.error('Error updating Supabase schedule:', err);
+    }
+  };
+
+  const deleteMedicine = async (id) => {
+    const slotNumber = parseInt(id.replace('MED-SLOT-', ''), 10);
+
+    try {
+      const { error } = await supabase
+        .from('schedule')
+        .update({ minutes: null })
+        .eq('section', slotNumber);
+
+      if (error) throw error;
+
+      // Refresh schedule locally
+      const { data: updatedSchedule } = await supabase
+        .from('schedule')
+        .select('*')
+        .order('section', { ascending: true });
+      
+      if (updatedSchedule) {
+        setDbSchedule(updatedSchedule);
+      }
+
+      addNotification({
+        patientId: 'PAT-8802',
+        title: 'Medication Cancelled',
+        message: `Smartbox Compartment ${slotNumber} schedule cleared.`,
+        type: 'Info'
+      });
+    } catch (err) {
+      console.error('Error deleting Supabase schedule:', err);
     }
   };
 

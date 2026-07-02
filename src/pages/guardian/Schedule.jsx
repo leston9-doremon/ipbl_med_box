@@ -29,6 +29,7 @@ export const Schedule = () => {
   const [endDate, setEndDate] = useState('');
   const [repeatDaily, setRepeatDaily] = useState(true);
   const [timingType, setTimingType] = useState('With Food'); // Before Food, After Food, With Food
+  const [boxSlot, setBoxSlot] = useState(1);
 
   const resetForm = () => {
     setName('');
@@ -44,6 +45,7 @@ export const Schedule = () => {
     setEndDate('');
     setRepeatDaily(true);
     setTimingType('With Food');
+    setBoxSlot(1);
     setEditingMed(null);
   };
 
@@ -62,6 +64,7 @@ export const Schedule = () => {
     setEndDate(med.endDate || '');
     setRepeatDaily(med.repeatDaily);
     setTimingType(med.timingType || 'With Food');
+    setBoxSlot(med.boxSlot || 1);
     setShowAddModal(true);
   };
 
@@ -84,6 +87,7 @@ export const Schedule = () => {
       endDate: endDate || new Date(new Date(startDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       repeatDaily,
       timingType,
+      boxSlot: parseInt(boxSlot, 10),
       image: 'capsule'
     };
 
@@ -331,6 +335,23 @@ export const Schedule = () => {
                         <span>Night</span>
                       </label>
                     </div>
+                  </div>
+
+                  {/* Compartment Slot Selection */}
+                  <div>
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Smartbox Compartment (Slot 1-15)</label>
+                    <select
+                      value={boxSlot}
+                      onChange={(e) => setBoxSlot(parseInt(e.target.value, 10))}
+                      className={`w-full mt-1.5 px-3 py-2 rounded-xl border outline-none bg-inherit
+                        ${darkMode ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200'}`}
+                    >
+                      {Array.from({ length: 15 }, (_, idx) => (
+                        <option key={idx + 1} value={idx + 1} className="bg-slate-900">
+                          Slot {idx + 1}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* Exact times */}
