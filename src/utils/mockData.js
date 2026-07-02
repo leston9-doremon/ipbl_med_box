@@ -50,84 +50,7 @@ export const INITIAL_PATIENTS = [
   }
 ];
 
-export const INITIAL_MEDICINES = [
-  {
-    id: "MED-001",
-    patientId: "PAT-8802",
-    name: "Metformin (Glucophage)",
-    image: "capsule",
-    dose: "500 mg",
-    quantity: "30 tablets",
-    morning: true,
-    afternoon: false,
-    night: true,
-    exactTime: "08:00 AM, 08:00 PM",
-    instructions: "Take with food",
-    duration: "90 days",
-    startDate: "2026-06-01",
-    endDate: "2026-08-30",
-    repeatDaily: true,
-    timingType: "With Food",
-    boxSlot: 1
-  },
-  {
-    id: "MED-002",
-    patientId: "PAT-8802",
-    name: "Lisinopril (Zestril)",
-    image: "round-tablet",
-    dose: "10 mg",
-    quantity: "15 tablets",
-    morning: true,
-    afternoon: false,
-    night: false,
-    exactTime: "08:00 AM",
-    instructions: "Take before food",
-    duration: "30 days",
-    startDate: "2026-06-15",
-    endDate: "2026-07-15",
-    repeatDaily: true,
-    timingType: "Before Food",
-    boxSlot: 2
-  },
-  {
-    id: "MED-003",
-    patientId: "PAT-8802",
-    name: "Atorvastatin (Lipitor)",
-    image: "oval-tablet",
-    dose: "20 mg",
-    quantity: "30 tablets",
-    morning: false,
-    afternoon: false,
-    night: true,
-    exactTime: "09:00 PM",
-    instructions: "Take before sleep, after food",
-    duration: "60 days",
-    startDate: "2026-06-10",
-    endDate: "2026-08-10",
-    repeatDaily: true,
-    timingType: "After Food",
-    boxSlot: 3
-  },
-  {
-    id: "MED-004",
-    patientId: "PAT-8802",
-    name: "Low-Dose Aspirin",
-    image: "pink-tablet",
-    dose: "81 mg",
-    quantity: "100 tablets",
-    morning: false,
-    afternoon: true,
-    night: false,
-    exactTime: "01:00 PM",
-    instructions: "Take with water",
-    duration: "365 days",
-    startDate: "2026-01-01",
-    endDate: "2026-12-31",
-    repeatDaily: true,
-    timingType: "With Food",
-    boxSlot: 4
-  }
-];
+export const INITIAL_MEDICINES = [];
 
 // Complete history logs of taken, missed, and pending medications for today
 export const INITIAL_MEDINE_LOGS = [
@@ -136,7 +59,7 @@ export const INITIAL_MEDINE_LOGS = [
     id: "LOG-100",
     patientId: "PAT-8802",
     medicineId: "MED-001",
-    medicineName: "Metformin (Glucophage)",
+    medicineName: "Slot 1 Med",
     dose: "500 mg",
     slot: "Morning",
     scheduledTime: "08:00 AM",
@@ -150,7 +73,7 @@ export const INITIAL_MEDINE_LOGS = [
     id: "LOG-101",
     patientId: "PAT-8802",
     medicineId: "MED-002",
-    medicineName: "Lisinopril (Zestril)",
+    medicineName: "Slot 2 Med",
     dose: "10 mg",
     slot: "Morning",
     scheduledTime: "08:00 AM",
@@ -164,7 +87,7 @@ export const INITIAL_MEDINE_LOGS = [
     id: "LOG-102",
     patientId: "PAT-8802",
     medicineId: "MED-004",
-    medicineName: "Low-Dose Aspirin",
+    medicineName: "Slot 4 Med",
     dose: "81 mg",
     slot: "Afternoon",
     scheduledTime: "01:00 PM",
@@ -173,7 +96,7 @@ export const INITIAL_MEDINE_LOGS = [
     delayMinutes: null,
     remarks: "Patient fell asleep during afternoon rest period",
     missedReason: "Slept through alarm",
-    doctorNote: "Aspirin is key for platelet suppression. Guardian should ensure patient remains awake or double-check box alarm.",
+    doctorNote: "Slot 4 Med is key for platelet suppression. Guardian should ensure patient remains awake or double-check box alarm.",
     guardianNote: "Will set vibration alert on her smartwatch next time.",
     date: "2026-07-02"
   },
@@ -181,7 +104,7 @@ export const INITIAL_MEDINE_LOGS = [
     id: "LOG-103",
     patientId: "PAT-8802",
     medicineId: "MED-001",
-    medicineName: "Metformin (Glucophage)",
+    medicineName: "Slot 1 Med",
     dose: "500 mg",
     slot: "Night",
     scheduledTime: "08:00 PM",
@@ -195,7 +118,7 @@ export const INITIAL_MEDINE_LOGS = [
     id: "LOG-104",
     patientId: "PAT-8802",
     medicineId: "MED-003",
-    medicineName: "Atorvastatin (Lipitor)",
+    medicineName: "Slot 3 Med",
     dose: "20 mg",
     slot: "Night",
     scheduledTime: "09:00 PM",
@@ -208,25 +131,25 @@ export const INITIAL_MEDINE_LOGS = [
 
   // Past Historical Logs (to populate adherence charts)
   // July 1st Logs (Adherence: 5/5)
-  { id: "LOG-090", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Metformin (Glucophage)", dose: "500 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:12 AM", status: "Taken", delayMinutes: 12, date: "2026-07-01" },
-  { id: "LOG-091", patientId: "PAT-8802", medicineId: "MED-002", medicineName: "Lisinopril (Zestril)", dose: "10 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:02 AM", status: "Taken", delayMinutes: 2, date: "2026-07-01" },
-  { id: "LOG-092", patientId: "PAT-8802", medicineId: "MED-004", medicineName: "Low-Dose Aspirin", dose: "81 mg", slot: "Afternoon", scheduledTime: "01:00 PM", takenTime: "01:10 PM", status: "Taken", delayMinutes: 10, date: "2026-07-01" },
-  { id: "LOG-093", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Metformin (Glucophage)", dose: "500 mg", slot: "Night", scheduledTime: "08:00 PM", takenTime: "08:05 PM", status: "Taken", delayMinutes: 5, date: "2026-07-01" },
-  { id: "LOG-094", patientId: "PAT-8802", medicineId: "MED-003", medicineName: "Atorvastatin (Lipitor)", dose: "20 mg", slot: "Night", scheduledTime: "09:00 PM", takenTime: "09:12 PM", status: "Taken", delayMinutes: 12, date: "2026-07-01" },
+  { id: "LOG-090", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Slot 1 Med", dose: "500 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:12 AM", status: "Taken", delayMinutes: 12, date: "2026-07-01" },
+  { id: "LOG-091", patientId: "PAT-8802", medicineId: "MED-002", medicineName: "Slot 2 Med", dose: "10 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:02 AM", status: "Taken", delayMinutes: 2, date: "2026-07-01" },
+  { id: "LOG-092", patientId: "PAT-8802", medicineId: "MED-004", medicineName: "Slot 4 Med", dose: "81 mg", slot: "Afternoon", scheduledTime: "01:00 PM", takenTime: "01:10 PM", status: "Taken", delayMinutes: 10, date: "2026-07-01" },
+  { id: "LOG-093", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Slot 1 Med", dose: "500 mg", slot: "Night", scheduledTime: "08:00 PM", takenTime: "08:05 PM", status: "Taken", delayMinutes: 5, date: "2026-07-01" },
+  { id: "LOG-094", patientId: "PAT-8802", medicineId: "MED-003", medicineName: "Slot 3 Med", dose: "20 mg", slot: "Night", scheduledTime: "09:00 PM", takenTime: "09:12 PM", status: "Taken", delayMinutes: 12, date: "2026-07-01" },
   
   // June 30th Logs (Adherence: 3/5 - 2 Missed)
-  { id: "LOG-080", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Metformin (Glucophage)", dose: "500 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:03 AM", status: "Taken", delayMinutes: 3, date: "2026-06-30" },
-  { id: "LOG-081", patientId: "PAT-8802", medicineId: "MED-002", medicineName: "Lisinopril (Zestril)", dose: "10 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: null, status: "Missed", missedReason: "Out of stock, wait for delivery", date: "2026-06-30" },
-  { id: "LOG-082", patientId: "PAT-8802", medicineId: "MED-004", medicineName: "Low-Dose Aspirin", dose: "81 mg", slot: "Afternoon", scheduledTime: "01:00 PM", takenTime: "01:30 PM", status: "Taken", delayMinutes: 30, date: "2026-06-30" },
-  { id: "LOG-083", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Metformin (Glucophage)", dose: "500 mg", slot: "Night", scheduledTime: "08:00 PM", takenTime: "08:10 PM", status: "Taken", delayMinutes: 10, date: "2026-06-30" },
-  { id: "LOG-084", patientId: "PAT-8802", medicineId: "MED-003", medicineName: "Atorvastatin (Lipitor)", dose: "20 mg", slot: "Night", scheduledTime: "09:00 PM", takenTime: null, status: "Missed", missedReason: "Fell asleep early", date: "2026-06-30" },
-
+  { id: "LOG-080", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Slot 1 Med", dose: "500 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:03 AM", status: "Taken", delayMinutes: 3, date: "2026-06-30" },
+  { id: "LOG-081", patientId: "PAT-8802", medicineId: "MED-002", medicineName: "Slot 2 Med", dose: "10 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: null, status: "Missed", missedReason: "Out of stock, wait for delivery", date: "2026-06-30" },
+  { id: "LOG-082", patientId: "PAT-8802", medicineId: "MED-004", medicineName: "Slot 4 Med", dose: "81 mg", slot: "Afternoon", scheduledTime: "01:00 PM", takenTime: "01:30 PM", status: "Taken", delayMinutes: 30, date: "2026-06-30" },
+  { id: "LOG-083", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Slot 1 Med", dose: "500 mg", slot: "Night", scheduledTime: "08:00 PM", takenTime: "08:10 PM", status: "Taken", delayMinutes: 10, date: "2026-06-30" },
+  { id: "LOG-084", patientId: "PAT-8802", medicineId: "MED-003", medicineName: "Slot 3 Med", dose: "20 mg", slot: "Night", scheduledTime: "09:00 PM", takenTime: null, status: "Missed", missedReason: "Fell asleep early", date: "2026-06-30" },
+ 
   // June 29th Logs (Adherence: 4/5 - 1 Missed)
-  { id: "LOG-070", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Metformin (Glucophage)", dose: "500 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:15 AM", status: "Taken", delayMinutes: 15, date: "2026-06-29" },
-  { id: "LOG-071", patientId: "PAT-8802", medicineId: "MED-002", medicineName: "Lisinopril (Zestril)", dose: "10 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:04 AM", status: "Taken", delayMinutes: 4, date: "2026-06-29" },
-  { id: "LOG-072", patientId: "PAT-8802", medicineId: "MED-004", medicineName: "Low-Dose Aspirin", dose: "81 mg", slot: "Afternoon", scheduledTime: "01:00 PM", takenTime: null, status: "Missed", missedReason: "Away from home without box", date: "2026-06-29" },
-  { id: "LOG-073", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Metformin (Glucophage)", dose: "500 mg", slot: "Night", scheduledTime: "08:00 PM", takenTime: "08:08 PM", status: "Taken", delayMinutes: 8, date: "2026-06-29" },
-  { id: "LOG-074", patientId: "PAT-8802", medicineId: "MED-003", medicineName: "Atorvastatin (Lipitor)", dose: "20 mg", slot: "Night", scheduledTime: "09:00 PM", takenTime: "09:05 PM", status: "Taken", delayMinutes: 5, date: "2026-06-29" }
+  { id: "LOG-070", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Slot 1 Med", dose: "500 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:15 AM", status: "Taken", delayMinutes: 15, date: "2026-06-29" },
+  { id: "LOG-071", patientId: "PAT-8802", medicineId: "MED-002", medicineName: "Slot 2 Med", dose: "10 mg", slot: "Morning", scheduledTime: "08:00 AM", takenTime: "08:04 AM", status: "Taken", delayMinutes: 4, date: "2026-06-29" },
+  { id: "LOG-072", patientId: "PAT-8802", medicineId: "MED-004", medicineName: "Slot 4 Med", dose: "81 mg", slot: "Afternoon", scheduledTime: "01:00 PM", takenTime: null, status: "Missed", missedReason: "Away from home without box", date: "2026-06-29" },
+  { id: "LOG-073", patientId: "PAT-8802", medicineId: "MED-001", medicineName: "Slot 1 Med", dose: "500 mg", slot: "Night", scheduledTime: "08:00 PM", takenTime: "08:08 PM", status: "Taken", delayMinutes: 8, date: "2026-06-29" },
+  { id: "LOG-074", patientId: "PAT-8802", medicineId: "MED-003", medicineName: "Slot 3 Med", dose: "20 mg", slot: "Night", scheduledTime: "09:00 PM", takenTime: "09:05 PM", status: "Taken", delayMinutes: 5, date: "2026-06-29" }
 ];
 
 export const INITIAL_EMERGENCY_CONTACTS = [
@@ -288,8 +211,8 @@ export const INITIAL_PRESCRIPTIONS = [
     patientId: "PAT-8802",
     doctorName: "Dr. Alexander Thorne",
     uploadDate: "2026-06-25",
-    title: "Cardiovascular Care Plan & Lipitor adjustment",
-    notes: "Increased Atorvastatin (Lipitor) to 20mg at night. Continue Metformin 500mg morning and night. Monitor heart rate daily.",
+    title: "Cardiovascular Care Plan & Slot 3 Med adjustment",
+    notes: "Increased Slot 3 Med. Continue Slot 1 Med morning and night. Monitor heart rate daily.",
     fileUrl: "presc_cardio_june2026.pdf",
     version: "v1.2",
     size: "1.4 MB",
@@ -301,7 +224,7 @@ export const INITIAL_PRESCRIPTIONS = [
     doctorName: "Dr. Alexander Thorne",
     uploadDate: "2026-05-10",
     title: "Hypertension & Diabetes Standard Regimen",
-    notes: "Initiated Metformin (Glucophage) 500mg, Lisinopril 10mg once daily. Patient reports mild fatigue.",
+    notes: "Initiated Slot 1 Med, Slot 2 Med once daily. Patient reports mild fatigue.",
     fileUrl: "presc_standard_may2026.pdf",
     version: "v1.0",
     size: "1.2 MB",
@@ -350,7 +273,7 @@ export const INITIAL_NOTIFICATIONS = [
     id: "NTF-001",
     patientId: "PAT-8802",
     title: "Medication Missed Alert",
-    message: "Low-Dose Aspirin scheduled for 01:00 PM was missed.",
+    message: "Slot 4 Med scheduled for 01:00 PM was missed.",
     type: "Warning",
     timestamp: "2026-07-02T13:30:00+05:30",
     read: false
