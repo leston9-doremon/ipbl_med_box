@@ -147,32 +147,13 @@ export const MedicalProvider = ({ children }) => {
   useEffect(() => {
     if (dbSchedule.length === 0) return;
 
-    const slotNameMap = {
-      1: { name: 'Atorvastatin', dose: '10mg' },
-      2: { name: 'Metformin', dose: '500mg' },
-      3: { name: 'Low-Dose Aspirin', dose: '81mg' },
-      4: { name: 'Lisinopril', dose: '10mg' },
-      5: { name: 'Amlodipine', dose: '5mg' },
-      6: { name: 'Gabapentin', dose: '300mg' },
-      7: { name: 'Levothyroxine', dose: '50mcg' },
-      8: { name: 'Omeprazole', dose: '20mg' },
-      9: { name: 'Losartan', dose: '50mg' },
-      10: { name: 'Albuterol', dose: '90mcg' },
-      11: { name: 'Sertraline', dose: '50mg' },
-      12: { name: 'Metoprolol', dose: '25mg' },
-      13: { name: 'Amoxicillin', dose: '500mg' },
-      14: { name: 'Furosemide', dose: '20mg' },
-      15: { name: 'Hydrochlorothiazide', dose: '12.5mg' }
-    };
-
     const syncedMedicines = dbSchedule
       .filter((row) => row.minutes !== null)
       .map((row) => {
-        const details = slotNameMap[row.section] || { name: `Active Med (Slot ${row.section})`, dose: '1 Unit' };
         return {
           id: `MED-SLOT-${row.section}`,
-          name: details.name,
-          dose: details.dose,
+          name: `Slot ${row.section} Med`,
+          dose: `1 Dose`,
           boxSlot: row.section,
           exactTime: formatMinutesToTime(row.minutes),
           repeatDaily: true,
