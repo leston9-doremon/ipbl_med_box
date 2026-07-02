@@ -59,104 +59,8 @@ export const TodayMedicines = () => {
   };
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
+    <div className="max-w-2xl mx-auto">
       
-      {/* Today's Schedule Table */}
-      <div className={`lg:col-span-2 p-6 rounded-medical border shadow-sm flex flex-col justify-between
-        ${darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'}`}>
-        <div>
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-base font-extrabold text-slate-850 dark:text-white">Active Schedule</h2>
-              <p className="text-xs text-slate-450 dark:text-slate-400 mt-0.5">Medications aligned with box slots</p>
-            </div>
-            <span className="text-xs text-slate-400 font-medium">Compartments: 4 Active</span>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px] text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="pb-3 pr-2">Medication</th>
-                  <th className="pb-3 pr-2">Scheduled</th>
-                  <th className="pb-3 pr-2">Slot / State</th>
-                  <th className="pb-3 pr-2">Instructions</th>
-                  <th className="pb-3 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/40">
-                {todayLogs.map((log) => (
-                  <tr key={log.id} className="text-xs group hover:bg-slate-500/5 transition-colors">
-                    {/* Name */}
-                    <td className="py-4 pr-2 font-bold text-slate-800 dark:text-slate-200">
-                      <div className="flex items-center space-x-3">
-                        <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0
-                          ${log.status === 'Taken' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                          <Pill size={16} />
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="truncate">{log.medicineName}</span>
-                          <span className="text-[10px] text-slate-400 font-normal">{log.dose}</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Scheduled Time */}
-                    <td className="py-4 pr-2 text-slate-500 font-mono font-medium">{log.scheduledTime}</td>
-
-                    {/* Status badge */}
-                    <td className="py-4 pr-2">
-                      <div className="flex flex-col space-y-1">
-                        <div>{getStatusBadge(log.status)}</div>
-                        {log.takenTime && (
-                          <span className="text-[10px] text-slate-400">
-                            Taken: {log.takenTime}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* Instructions */}
-                    <td className="py-4 pr-2 text-slate-500 leading-relaxed max-w-[150px] truncate">
-                      {log.remarks || 'Take with water'}
-                    </td>
-
-                    {/* Action button */}
-                    <td className="py-4 text-center">
-                      {log.status === 'Upcoming' ? (
-                        <div className="flex flex-col items-center space-y-1.5 min-w-[120px]">
-                          <input
-                            type="text"
-                            placeholder="Add remark..."
-                            value={remarkInput[log.id] || ''}
-                            onChange={(e) => setRemarkInput({ ...remarkInput, [log.id]: e.target.value })}
-                            className={`w-full px-2 py-1 text-[10px] rounded-md border outline-none
-                              ${darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-                          />
-                          <button
-                            onClick={() => handleTakePill(log.id)}
-                            className="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-1 px-2.5 rounded-lg text-[10px] flex items-center justify-center space-x-1"
-                          >
-                            <Play size={10} className="fill-current" />
-                            <span>Mark Taken</span>
-                          </button>
-                        </div>
-                      ) : log.status === 'Taken' ? (
-                        <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-                          <Check size={14} className="stroke-[2.5]" />
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 font-medium italic">-</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
       {/* Timeline View */}
       <div className={`p-6 rounded-medical border shadow-sm
         ${darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'}`}>
@@ -201,6 +105,27 @@ export const TodayMedicines = () => {
                 {log.status === 'Missed' && (
                   <div className="text-rose-500 text-[10px] mt-1.5 font-bold">
                     Missed. Reason: {log.missedReason}
+                  </div>
+                )}
+                
+                {/* Embedded action button for upcoming items */}
+                {log.status === 'Upcoming' && (
+                  <div className="mt-3 flex items-center space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Add remark..."
+                      value={remarkInput[log.id] || ''}
+                      onChange={(e) => setRemarkInput({ ...remarkInput, [log.id]: e.target.value })}
+                      className={`flex-grow px-2 py-1 text-[10px] rounded-md border outline-none
+                        ${darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                    />
+                    <button
+                      onClick={() => handleTakePill(log.id)}
+                      className="bg-primary hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-lg text-[10px] flex items-center justify-center space-x-1 whitespace-nowrap"
+                    >
+                      <Play size={10} className="fill-current mr-1" />
+                      <span>Mark Taken</span>
+                    </button>
                   </div>
                 )}
               </div>
