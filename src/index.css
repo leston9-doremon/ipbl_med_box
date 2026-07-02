@@ -9,32 +9,16 @@
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
-  --color-dark-text: #0F172A;
-  --color-light-text: #64748B;
+  --color-dark-text: #000000;
+  --color-light-text: #334155;
   --radius-medical: 18px;
-
-  /* Force consistent bold text colors */
-  --color-slate-950: #0F172A;
-  --color-slate-900: #0F172A;
-  --color-slate-850: #0F172A;
-  --color-slate-800: #0F172A;
-  --color-slate-750: #0F172A;
-  --color-slate-700: #0F172A;
-
-  /* Force consistent light/muted text colors */
-  --color-slate-650: #64748B;
-  --color-slate-600: #64748B;
-  --color-slate-550: #64748B;
-  --color-slate-500: #64748B;
-  --color-slate-450: #64748B;
-  --color-slate-400: #64748B;
 }
 
 /* Custom global rules for medical application styling */
 body {
   font-family: var(--font-sans);
   background-color: #F8FAFC;
-  color: #0F172A;
+  color: #000000;
   overflow-x: hidden;
 }
 
@@ -42,21 +26,56 @@ body {
 .dark-theme {
   background-color: #090D16 !important;
   color: #F8FAFC !important;
+}
 
-  /* Override text variables for consistent dark mode colors */
-  --color-slate-950: #F8FAFC !important;
-  --color-slate-900: #F8FAFC !important;
-  --color-slate-850: #F8FAFC !important;
-  --color-slate-800: #F8FAFC !important;
-  --color-slate-750: #F8FAFC !important;
-  --color-slate-700: #F8FAFC !important;
+.dark-theme body {
+  background-color: #090D16 !important;
+  color: #F8FAFC !important;
+}
 
-  --color-slate-650: #94A3B8 !important;
-  --color-slate-600: #94A3B8 !important;
-  --color-slate-550: #94A3B8 !important;
-  --color-slate-500: #94A3B8 !important;
-  --color-slate-450: #94A3B8 !important;
-  --color-slate-400: #94A3B8 !important;
+/* Force consistent bold text colors to fixed pure black in light mode */
+.text-slate-950,
+.text-slate-900,
+.text-slate-850,
+.text-slate-800,
+.text-slate-750,
+.text-slate-700,
+h1, h2, h3, h4, th, .font-bold {
+  color: #000000 !important;
+}
+
+/* Force consistent light/muted text colors in light mode */
+.text-slate-650,
+.text-slate-600,
+.text-slate-550,
+.text-slate-500,
+.text-slate-450,
+.text-slate-400 {
+  color: #475569 !important;
+}
+
+/* Override text colors in dark mode (keeps card backgrounds/borders intact) */
+.dark-theme .text-slate-950,
+.dark-theme .text-slate-900,
+.dark-theme .text-slate-850,
+.dark-theme .text-slate-800,
+.dark-theme .text-slate-750,
+.dark-theme .text-slate-700,
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme th {
+  color: #F8FAFC !important;
+}
+
+.dark-theme .text-slate-650,
+.dark-theme .text-slate-600,
+.dark-theme .text-slate-550,
+.dark-theme .text-slate-500,
+.dark-theme .text-slate-450,
+.dark-theme .text-slate-400 {
+  color: #94A3B8 !important;
 }
 
 .dark-theme body {
