@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --color-primary: #2563EB;
+  --color-secondary: #14B8A6;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-dark-text: #0F172A;
+  --color-light-text: #64748B;
+  --radius-medical: 18px;
+}
+
+/* Custom global rules for medical application styling */
+body {
+  font-family: var(--font-sans);
+  background-color: #F8FAFC;
+  color: #0F172A;
+  overflow-x: hidden;
+}
+
+/* Custom dark mode classes to override background */
+.dark-theme {
+  background-color: #090D16 !important;
+  color: #F8FAFC !important;
+}
+
+.dark-theme body {
+  background-color: #090D16 !important;
+  color: #F8FAFC !important;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark-theme ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Custom pulse animations for ECG and vitals */
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.95;
+  }
+}
+
+.pulse-animation {
+  animation: heartPulse 1.2s infinite ease-in-out;
+}
+
+/* Glowing animations */
+@keyframes softGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(20, 184, 166, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(20, 184, 166, 0.5);
+  }
+}
+
+.glow-teal {
+  animation: softGlow 2.5s infinite ease-in-out;
+}
+
+/* Card hover and scale effects */
+.hover-medical-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-medical-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 16px -6px rgba(15, 23, 42, 0.04);
+}
+
+/* Custom ECG grid canvas style */
+.ecg-grid {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+}
+
+.dark-theme .ecg-grid {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(20, 184, 166, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20, 184, 166, 0.05) 1px, transparent 1px);
+}
