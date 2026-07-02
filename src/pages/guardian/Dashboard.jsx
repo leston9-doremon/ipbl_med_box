@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMedical } from '../../contexts/MedicalContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUI } from '../../contexts/UIContext';
+import { SupabaseHardwarePanel } from '../../components/SupabaseHardwarePanel';
 import { Bar, Line } from 'react-chartjs-2';
 import { 
   Heart, 
@@ -21,7 +22,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export const GuardianDashboard = () => {
   const { user } = useAuth();
   const { darkMode } = useUI();
-  const { medicineLogs, telemetry, patients, notifications } = useMedical();
+  const { medicineLogs, telemetry, patients, notifications, dbSensorLog } = useMedical();
   const navigate = useNavigate();
 
   const [time, setTime] = useState(new Date());
@@ -152,7 +153,7 @@ export const GuardianDashboard = () => {
               <div className="flex flex-col">
                 <span className="text-[9px] uppercase font-bold text-slate-400">Heart Rate</span>
                 <span className="text-sm font-extrabold font-mono text-slate-850 dark:text-white">
-                  {telemetry.vitals.heartRate} <span className="text-[9px] font-normal text-slate-400">BPM</span>
+                  {dbSensorLog?.bpm !== null && dbSensorLog?.bpm !== undefined ? dbSensorLog.bpm : '--'} <span className="text-[9px] font-normal text-slate-400">BPM</span>
                 </span>
               </div>
             </div>
@@ -164,7 +165,7 @@ export const GuardianDashboard = () => {
               <div className="flex flex-col">
                 <span className="text-[9px] uppercase font-bold text-slate-400">Temp</span>
                 <span className="text-sm font-extrabold font-mono text-slate-850 dark:text-white">
-                  {telemetry.vitals.temperature} <span className="text-[9px] font-normal text-slate-400">°C</span>
+                  {dbSensorLog?.temp_c !== null && dbSensorLog?.temp_c !== undefined ? `${dbSensorLog.temp_c}` : '--'} <span className="text-[9px] font-normal text-slate-400">°C</span>
                 </span>
               </div>
             </div>
@@ -267,6 +268,9 @@ export const GuardianDashboard = () => {
         </div>
 
       </div>
+
+      {/* Supabase Hardware Integration Panel */}
+      <SupabaseHardwarePanel />
 
       {/* Alert logs list */}
       <div className={`p-5 rounded-medical border shadow-sm

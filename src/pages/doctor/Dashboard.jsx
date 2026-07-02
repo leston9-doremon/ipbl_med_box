@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useUI } from '../../contexts/UIContext';
 import { ECGCanvas } from '../../components/ECGCanvas';
 import { Bar, Line } from 'react-chartjs-2';
+import { SupabaseHardwarePanel } from '../../components/SupabaseHardwarePanel';
 import { 
   Heart, 
   Thermometer, 
@@ -22,7 +23,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export const DoctorDashboard = () => {
   const { selectedPatientId, setSelectedPatientId } = useAuth();
   const { darkMode } = useUI();
-  const { medicineLogs, telemetry, patients, notifications, markNotificationRead } = useMedical();
+  const { medicineLogs, telemetry, patients, notifications, markNotificationRead, dbSensorLog } = useMedical();
   const navigate = useNavigate();
 
   const [time, setTime] = useState(new Date());
@@ -163,7 +164,7 @@ export const DoctorDashboard = () => {
               <div className="flex flex-col">
                 <span className="text-[9px] uppercase font-bold text-slate-400">Heart Rate</span>
                 <span className="text-sm font-extrabold font-mono text-slate-850 dark:text-white">
-                  {telemetry.vitals.heartRate} <span className="text-[9px] font-normal text-slate-400">BPM</span>
+                  {dbSensorLog?.bpm !== null && dbSensorLog?.bpm !== undefined ? dbSensorLog.bpm : '--'} <span className="text-[9px] font-normal text-slate-400">BPM</span>
                 </span>
               </div>
             </div>
@@ -175,7 +176,7 @@ export const DoctorDashboard = () => {
               <div className="flex flex-col">
                 <span className="text-[9px] uppercase font-bold text-slate-400">Temp</span>
                 <span className="text-sm font-extrabold font-mono text-slate-850 dark:text-white">
-                  {telemetry.vitals.temperature} <span className="text-[9px] font-normal text-slate-400">°C</span>
+                  {dbSensorLog?.temp_c !== null && dbSensorLog?.temp_c !== undefined ? `${dbSensorLog.temp_c}` : '--'} <span className="text-[9px] font-normal text-slate-400">°C</span>
                 </span>
               </div>
             </div>
@@ -187,8 +188,11 @@ export const DoctorDashboard = () => {
           </div>
         </div>
 
+        {/* Supabase Hardware Integration Panel */}
+        <SupabaseHardwarePanel />
+
         {/* EMR Registry Quicklinks */}
-        <div className={`p-6 rounded-medical border shadow-sm flex flex-col justify-between
+        <div className={`p-5 rounded-medical border shadow-sm flex flex-col justify-between
           ${darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'}`}>
           <div>
             <span className="text-[10px] text-slate-405 font-bold uppercase tracking-wider">Clinical Admin</span>
@@ -222,7 +226,7 @@ export const DoctorDashboard = () => {
         <h3 className="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-4">
           Live Lead II Waveform Monitor
         </h3>
-        <ECGCanvas heartRate={telemetry.vitals.heartRate} height={140} />
+        <ECGCanvas heartRate={dbSensorLog?.bpm || telemetry.vitals.heartRate} height={140} />
       </div>
 
       {/* Charts Grid */}

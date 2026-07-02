@@ -5,6 +5,7 @@ import { useUI } from '../../contexts/UIContext';
 import { ECGCanvas } from '../../components/ECGCanvas';
 import { Bar, Line } from 'react-chartjs-2';
 import { motion } from 'framer-motion';
+import { SupabaseHardwarePanel } from '../../components/SupabaseHardwarePanel';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -51,7 +52,8 @@ export const PatientDashboard = () => {
     medicineLogs, 
     telemetry, 
     notifications, 
-    markNotificationRead 
+    markNotificationRead,
+    dbSensorLog 
   } = useMedical();
 
   const [time, setTime] = useState(new Date());
@@ -327,7 +329,7 @@ export const PatientDashboard = () => {
               <div className="flex flex-col">
                 <span className="text-[9px] uppercase font-bold text-slate-400">Heart Rate</span>
                 <span className="text-base font-extrabold font-mono text-slate-850 dark:text-white">
-                  {telemetry.vitals.heartRate} <span className="text-[10px] font-normal text-slate-400">BPM</span>
+                  {dbSensorLog?.bpm !== null && dbSensorLog?.bpm !== undefined ? dbSensorLog.bpm : '--'} <span className="text-[10px] font-normal text-slate-400">BPM</span>
                 </span>
               </div>
             </div>
@@ -339,7 +341,7 @@ export const PatientDashboard = () => {
               <div className="flex flex-col">
                 <span className="text-[9px] uppercase font-bold text-slate-400">Temp</span>
                 <span className="text-base font-extrabold font-mono text-slate-850 dark:text-white">
-                  {telemetry.vitals.temperature} <span className="text-[10px] font-normal text-slate-400">°C</span>
+                  {dbSensorLog?.temp_c !== null && dbSensorLog?.temp_c !== undefined ? `${dbSensorLog.temp_c}` : '--'} <span className="text-[10px] font-normal text-slate-400">°C</span>
                 </span>
               </div>
             </div>
@@ -368,7 +370,7 @@ export const PatientDashboard = () => {
               <ChevronRight size={12} className="ml-0.5" />
             </Link>
           </div>
-          <ECGCanvas heartRate={telemetry.vitals.heartRate} height={100} />
+          <ECGCanvas heartRate={dbSensorLog?.bpm || telemetry.vitals.heartRate} height={100} />
         </div>
       </div>
 
@@ -410,6 +412,9 @@ export const PatientDashboard = () => {
         </div>
 
       </div>
+
+      {/* Supabase Hardware Integration Panel */}
+      <SupabaseHardwarePanel />
 
       {/* Bottom Row: Recent Notifications */}
       <div className={`p-5 rounded-medical border shadow-sm

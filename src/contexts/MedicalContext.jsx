@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../utils/supabaseClient';
 import {
   INITIAL_PATIENTS,
   INITIAL_MEDICINES,
@@ -21,6 +22,102 @@ export const MedicalProvider = ({ children }) => {
   const [medicalDocuments, setMedicalDocuments] = useState(INITIAL_MEDICAL_DOCUMENTS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [telemetry, setTelemetry] = useState(INITIAL_TELEMETRY);
+
+  // Supabase states
+  const [dbSchedule, setDbSchedule] = useState([]);
+  const [dbSensorLog, setDbSensorLog] = useState(null);
+  const [dbDispenseLogs, setDbDispenseLogs] = useState([]);
+  const [dbLoading, setDbLoading] = useState(true);
+  const [dbError, setDbError] = useState(null);
+
+  // Supabase Initial Fetch and Real-time Subscriptions
+  useEffect(() => {
+    let active = true;
+
+    const fetchInitialData = async () => {
+      setDbLoading(true);
+      setDbError(null);
+      try {
+        // 1. Fetch schedule (15 rows)
+        const { data: scheduleData, error: scheduleErr } = await supabase
+          .from('schedule')
+          .select('*')
+          .order('section', { ascending: true });
+
+        if (scheduleErr) throw scheduleErr;
+
+        // 2. Fetch latest sensor_log
+        const { data: sensorData, error: sensorErr } = await supabase
+          .from('sensor_log')
+          .select('*')
+          .order('recorded_at', { ascending: false })
+          .limit(1);
+
+        if (sensorErr) throw sensorErr;
+
+        // 3. Fetch recent dispense_logs
+        const { data: dispenseData, error: dispenseErr } = await supabase
+          .from('dispense_log')
+          .select('*')
+          .order('dispensed_at', { ascending: false })
+          .limit(20);
+
+        if (dispenseErr) throw dispenseErr;
+
+        if (active) {
+          setDbSchedule(scheduleData || []);
+          setDbSensorLog(sensorData?.[0] || null);
+          setDbDispenseLogs(dispenseData || []);
+        }
+      } catch (err) {
+        console.error('Error fetching Supabase data:', err);
+        if (active) {
+          setDbError(err.message || 'Failed to connect to Supabase');
+        }
+      } finally {
+        if (active) {
+          setDbLoading(false);
+        }
+      }
+    };
+
+    fetchInitialData();
+
+    // Set up real-time subscriptions
+    const sensorChannel = supabase
+      .channel('sensor_log_inserts')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'sensor_log' },
+        (payload) => {
+          if (active) {
+            console.log('Real-time sensor_log insert:', payload.new);
+            setDbSensorLog(payload.new);
+          }
+        }
+      )
+      .subscribe();
+
+    const dispenseChannel = supabase
+      .channel('dispense_log_inserts')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'dispense_log' },
+        (payload) => {
+          if (active) {
+            console.log('Real-time dispense_log insert:', payload.new);
+            setDbDispenseLogs((prev) => [payload.new, ...prev].slice(0, 20));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      active = false;
+      supabase.removeChannel(sensorChannel);
+      supabase.removeChannel(dispenseChannel);
+    };
+  }, []);
 
   // Dynamic Telemetry Simulation: Fluctuate vitals in real-time
   useEffect(() => {
@@ -289,7 +386,12 @@ export const MedicalProvider = ({ children }) => {
         deleteEmergencyContact,
         addNotification,
         markNotificationRead,
-        clearNotifications
+        clearNotifications,
+        dbSchedule,
+        dbSensorLog,
+        dbDispenseLogs,
+        dbLoading,
+        dbError
       }}
     >
       {children}
