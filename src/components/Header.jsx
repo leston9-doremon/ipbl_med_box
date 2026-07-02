@@ -11,7 +11,8 @@ import {
   LogOut, 
   FileText,
   Activity,
-  AlertCircle
+  AlertCircle,
+  Menu
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUI } from '../contexts/UIContext';
@@ -20,7 +21,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export const Header = () => {
   const { user, logout } = useAuth();
-  const { darkMode, toggleDarkMode, sidebarCollapsed } = useUI();
+  const { darkMode, toggleDarkMode, sidebarCollapsed, toggleMobileDrawer } = useUI();
   const { notifications, markNotificationRead, clearNotifications } = useMedical();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -28,6 +29,17 @@ export const Header = () => {
 
   // Get unread count
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Detect screen size in JS to adjust header offset responsively
+  const [isLargeScreen, setIsLargeScreen] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Breadcrumbs calculation
   const getBreadcrumbs = () => {
@@ -77,19 +89,32 @@ export const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 right-0 z-30 h-16 flex items-center justify-between px-6 border-b transition-all duration-300
+      className={`fixed top-0 right-0 z-30 h-16 flex items-center justify-between px-4 sm:px-6 border-b transition-all duration-300
         ${darkMode 
           ? 'bg-[#090D16]/95 border-slate-800 text-slate-100' 
           : 'bg-white/95 border-slate-200 text-slate-800'}
         backdrop-blur-md`}
-      style={{ left: sidebarCollapsed ? '80px' : '260px' }}
+      style={{ left: isLargeScreen ? (sidebarCollapsed ? '80px' : '260px') : '0' }}
     >
-      {/* Left Area: Title & Breadcrumbs */}
-      <div className="flex flex-col items-start">
-        {getBreadcrumbs()}
-        <h1 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-100 leading-none mt-1">
-          {getPageTitle()}
-        </h1>
+      {/* Left Area: Hamburger, Title & Breadcrumbs */}
+      <div className="flex items-center space-x-3">
+        {!isLargeScreen && (
+          <button
+            onClick={toggleMobileDrawer}
+            className={`h-9 w-9 rounded-xl border flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors
+              ${darkMode ? 'border-slate-800 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-600'}`}
+          >
+            <Menu size={18} />
+          </button>
+        )}
+        <div className="flex flex-col items-start">
+          <div className="hidden sm:block">
+            {getBreadcrumbs()}
+          </div>
+          <h1 className="text-base sm:text-lg font-bold tracking-tight text-slate-800 dark:text-slate-100 leading-none sm:mt-1">
+            {getPageTitle()}
+          </h1>
+        </div>
       </div>
 
       {/* Right Area: Actions */}

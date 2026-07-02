@@ -197,7 +197,7 @@ export const GuardianDocuments = () => {
 
           {/* Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[600px] text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-105 dark:border-slate-800 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                   <th className="pb-3 pr-2">Report Description</th>

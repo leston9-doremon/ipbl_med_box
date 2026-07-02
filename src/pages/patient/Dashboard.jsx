@@ -162,7 +162,7 @@ export const PatientDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Welcome & Time Header */}
-      <div className="grid md:grid-cols-3 gap-6 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
         <div className="md:col-span-2">
           <h2 className="text-xl font-extrabold tracking-tight text-slate-800 dark:text-white">
             Welcome Back, Eleanor
@@ -195,7 +195,7 @@ export const PatientDashboard = () => {
       </div>
 
       {/* Hero Stats Row */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {/* Adherence Circle Progress Card */}
         <div className={`p-6 rounded-medical border flex flex-col justify-between shadow-sm
@@ -373,7 +373,7 @@ export const PatientDashboard = () => {
       </div>
 
       {/* Analytics Charts Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Weekly Adherence Chart */}
         <div className={`p-5 rounded-medical border shadow-sm

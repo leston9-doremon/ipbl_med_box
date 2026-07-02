@@ -84,7 +84,7 @@ export const DoctorDocuments = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredDocs.length === 0 ? (
           <div className={`col-span-3 text-center py-20 rounded-medical border 
             ${darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'}`}>

@@ -118,7 +118,7 @@ export const DoctorDashboard = () => {
       </div>
 
       {/* Stats Summary Grid */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {/* Compliance */}
         <div className={`p-6 rounded-medical border shadow-sm flex flex-col justify-between
@@ -226,7 +226,7 @@ export const DoctorDashboard = () => {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Weekly Adherence Chart */}
         <div className={`p-5 rounded-medical border shadow-sm

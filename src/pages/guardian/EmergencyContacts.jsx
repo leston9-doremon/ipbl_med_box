@@ -196,7 +196,7 @@ export const GuardianEmergencyContacts = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+              <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs max-h-[65vh] overflow-y-auto">
                 {/* Name */}
                 <div>
                   <label className="text-[10px] text-slate-405 font-bold uppercase tracking-wider">Contact Name</label>

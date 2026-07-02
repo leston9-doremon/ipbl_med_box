@@ -8,8 +8,13 @@ import { motion } from 'framer-motion';
 
 export const PortalLayout = ({ requiredRole }) => {
   const { user } = useAuth();
-  const { sidebarCollapsed, darkMode } = useUI();
+  const { sidebarCollapsed, darkMode, mobileDrawerOpen, closeMobileDrawer } = useUI();
   const location = useLocation();
+
+  // Close mobile drawer when route changes
+  React.useEffect(() => {
+    closeMobileDrawer();
+  }, [location.pathname]);
 
   // Route Guard: If not logged in, redirect to login
   if (!user) {
@@ -31,16 +36,23 @@ export const PortalLayout = ({ requiredRole }) => {
       {/* Sidebar Navigation */}
       <Sidebar />
 
+      {/* Mobile Drawer Backdrop */}
+      {mobileDrawerOpen && (
+        <div
+          onClick={closeMobileDrawer}
+          className="fixed inset-0 z-35 bg-slate-950/60 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+        />
+      )}
+
       {/* Main Panel Wrapper */}
       <div 
-        className="flex flex-col min-h-screen transition-all duration-300"
-        style={{ paddingLeft: sidebarCollapsed ? '80px' : '260px' }}
+        className={`flex flex-col min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-[80px]' : 'lg:pl-[260px]'}`}
       >
         {/* Top Header */}
         <Header />
 
         {/* Content Shell */}
-        <main className="flex-1 p-6 mt-16 overflow-y-auto max-w-[1600px] mx-auto w-full">
+        <main className="flex-1 p-4 sm:p-6 mt-16 overflow-y-auto max-w-[1600px] mx-auto w-full">
           {/* Animated Page Transitions */}
           <motion.div
             key={location.pathname}

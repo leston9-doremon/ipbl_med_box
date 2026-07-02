@@ -69,7 +69,7 @@ export const GuardianMissedDoses = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 dark:border-slate-850 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                 <th className="pb-3 pr-2">Medication</th>

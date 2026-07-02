@@ -26,10 +26,40 @@ export const DoctorPrescriptionUpload = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Fit canvas to layout size on mount
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
     const ctx = canvas.getContext('2d');
     ctx.strokeStyle = '#2563EB'; // Medical blue pen
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
+
+    const handleResize = () => {
+      const currentRect = canvas.getBoundingClientRect();
+      if (currentRect.width === 0) return;
+      
+      // Store current drawing before resizing
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(canvas, 0, 0);
+
+      canvas.width = currentRect.width;
+      canvas.height = currentRect.height;
+      
+      // Re-initialize stroke parameters and restore drawing
+      ctx.strokeStyle = '#2563EB';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.drawImage(tempCanvas, 0, 0, currentRect.width, currentRect.height);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [darkMode]);
 
   const startDrawing = (e) => {
@@ -161,8 +191,6 @@ export const DoctorPrescriptionUpload = () => {
               ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
               <canvas
                 ref={canvasRef}
-                width={450}
-                height={80}
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}

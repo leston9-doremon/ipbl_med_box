@@ -8,6 +8,7 @@ export const UIProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : false;
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('medical_dark_mode', JSON.stringify(darkMode));
@@ -20,6 +21,8 @@ export const UIProvider = ({ children }) => {
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
+  const toggleMobileDrawer = () => setMobileDrawerOpen(!mobileDrawerOpen);
+  const closeMobileDrawer = () => setMobileDrawerOpen(false);
 
   return (
     <UIContext.Provider
@@ -29,6 +32,9 @@ export const UIProvider = ({ children }) => {
         sidebarCollapsed,
         setSidebarCollapsed,
         toggleSidebar,
+        mobileDrawerOpen,
+        toggleMobileDrawer,
+        closeMobileDrawer
       }}
     >
       {children}

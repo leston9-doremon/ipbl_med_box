@@ -23,10 +23,21 @@ import { useMedical } from '../contexts/MedicalContext';
 
 export const Sidebar = () => {
   const { user, logout, selectedPatientId } = useAuth();
-  const { sidebarCollapsed, toggleSidebar, darkMode } = useUI();
+  const { sidebarCollapsed, toggleSidebar, darkMode, mobileDrawerOpen } = useUI();
   const { patients } = useMedical();
 
   const activePatient = patients.find(p => p.id === selectedPatientId);
+
+  // Detect screen size in JS to switch between desktop collapse & mobile drawer animations
+  const [isLargeScreen, setIsLargeScreen] = React.useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const getLinks = (role) => {
     switch (role) {
@@ -74,9 +85,13 @@ export const Sidebar = () => {
 
   return (
     <motion.aside
-      animate={{ width: sidebarCollapsed ? 80 : 260 }}
+      animate={
+        isLargeScreen
+          ? { width: sidebarCollapsed ? 80 : 260, x: 0 }
+          : { width: 260, x: mobileDrawerOpen ? 0 : -260 }
+      }
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`fixed top-0 left-0 bottom-0 z-40 flex flex-col border-r shrink-0
+      className={`fixed top-0 left-0 bottom-0 z-50 flex flex-col border-r shrink-0
         ${darkMode 
           ? 'bg-[#0B1220] border-slate-800 text-slate-100' 
           : 'bg-white border-slate-200 text-slate-800'}

@@ -76,7 +76,7 @@ export const GuardianDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Top Welcome Panel */}
-      <div className="grid md:grid-cols-3 gap-6 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
         <div className="md:col-span-2">
           <h2 className="text-xl font-extrabold tracking-tight text-slate-800 dark:text-white">
             Guardian Console
@@ -107,7 +107,7 @@ export const GuardianDashboard = () => {
       </div>
 
       {/* Main Stats Row */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {/* Compliance Progress Ring */}
         <div className={`p-6 rounded-medical border shadow-sm flex flex-col justify-between
@@ -220,7 +220,7 @@ export const GuardianDashboard = () => {
       </div>
 
       {/* Compliance Trends charts */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Weekly Adherence Chart */}
         <div className={`p-5 rounded-medical border shadow-sm
