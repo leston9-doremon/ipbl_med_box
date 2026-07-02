@@ -13,17 +13,49 @@ import {
 
 const MedicalContext = createContext(undefined);
 
-// Helper to parse "08:00 AM" into minutes since midnight
+// Helper to parse multiple human time formats (e.g. "08:00 AM", "8:00am", "8am", "14:30", "480") into minutes since midnight
 const parseTimeToMinutes = (timeStr) => {
   if (!timeStr) return null;
-  const match = timeStr.trim().match(/^(\d+):(\d+)\s*(AM|PM)$/i);
-  if (!match) return null;
-  let hrs = parseInt(match[1], 10);
-  const mins = parseInt(match[2], 10);
-  const ampm = match[3].toUpperCase();
-  if (ampm === 'PM' && hrs < 12) hrs += 12;
-  if (ampm === 'AM' && hrs === 12) hrs = 0;
-  return hrs * 60 + mins;
+  const clean = timeStr.trim().toLowerCase();
+
+  // 1. Try matching HH:MM AM/PM or H:MM AM/PM or HH:MMam etc.
+  let match = clean.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/);
+  if (match) {
+    let hrs = parseInt(match[1], 10);
+    const mins = parseInt(match[2], 10);
+    const ampm = match[3];
+    if (ampm === 'pm' && hrs < 12) hrs += 12;
+    if (ampm === 'am' && hrs === 12) hrs = 0;
+    return hrs * 60 + mins;
+  }
+
+  // 2. Try matching HH AM/PM or H AM/PM (e.g. "8 AM", "12 pm")
+  match = clean.match(/^(\d{1,2})\s*(am|pm)$/);
+  if (match) {
+    let hrs = parseInt(match[1], 10);
+    const ampm = match[2];
+    if (ampm === 'pm' && hrs < 12) hrs += 12;
+    if (ampm === 'am' && hrs === 12) hrs = 0;
+    return hrs * 60;
+  }
+
+  // 3. Try matching 24-hour time HH:MM (e.g. "14:30", "08:00", "8:00")
+  match = clean.match(/^(\d{1,2}):(\d{2})$/);
+  if (match) {
+    const hrs = parseInt(match[1], 10);
+    const mins = parseInt(match[2], 10);
+    if (hrs >= 0 && hrs < 24 && mins >= 0 && mins < 60) {
+      return hrs * 60 + mins;
+    }
+  }
+
+  // 4. Try matching raw minutes integer (e.g. "480")
+  if (/^\d+$/.test(clean)) {
+    const mins = parseInt(clean, 10);
+    if (mins >= 0 && mins < 1440) return mins;
+  }
+
+  return null;
 };
 
 // Helper to convert minutes since midnight to AM/PM string
@@ -239,8 +271,7 @@ export const MedicalProvider = ({ children }) => {
     try {
       const { error } = await supabase
         .from('schedule')
-        .update({ minutes: parsedMinutes })
-        .eq('section', slotNumber);
+        .upsert({ section: slotNumber, minutes: parsedMinutes });
 
       if (error) throw error;
 
@@ -273,8 +304,7 @@ export const MedicalProvider = ({ children }) => {
       if (parsedMinutes !== null) {
         const { error } = await supabase
           .from('schedule')
-          .update({ minutes: parsedMinutes })
-          .eq('section', slotNumber);
+          .upsert({ section: slotNumber, minutes: parsedMinutes });
         
         if (error) throw error;
       }
@@ -299,8 +329,7 @@ export const MedicalProvider = ({ children }) => {
     try {
       const { error } = await supabase
         .from('schedule')
-        .update({ minutes: null })
-        .eq('section', slotNumber);
+        .upsert({ section: slotNumber, minutes: null });
 
       if (error) throw error;
 
