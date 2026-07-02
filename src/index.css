@@ -12,6 +12,22 @@
   --color-dark-text: #0F172A;
   --color-light-text: #64748B;
   --radius-medical: 18px;
+
+  /* Force consistent bold text colors */
+  --color-slate-950: #0F172A;
+  --color-slate-900: #0F172A;
+  --color-slate-850: #0F172A;
+  --color-slate-800: #0F172A;
+  --color-slate-750: #0F172A;
+  --color-slate-700: #0F172A;
+
+  /* Force consistent light/muted text colors */
+  --color-slate-650: #64748B;
+  --color-slate-600: #64748B;
+  --color-slate-550: #64748B;
+  --color-slate-500: #64748B;
+  --color-slate-450: #64748B;
+  --color-slate-400: #64748B;
 }
 
 /* Custom global rules for medical application styling */
@@ -22,10 +38,25 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom dark mode classes to override background */
+/* Custom dark mode classes to override background and text */
 .dark-theme {
   background-color: #090D16 !important;
   color: #F8FAFC !important;
+
+  /* Override text variables for consistent dark mode colors */
+  --color-slate-950: #F8FAFC !important;
+  --color-slate-900: #F8FAFC !important;
+  --color-slate-850: #F8FAFC !important;
+  --color-slate-800: #F8FAFC !important;
+  --color-slate-750: #F8FAFC !important;
+  --color-slate-700: #F8FAFC !important;
+
+  --color-slate-650: #94A3B8 !important;
+  --color-slate-600: #94A3B8 !important;
+  --color-slate-550: #94A3B8 !important;
+  --color-slate-500: #94A3B8 !important;
+  --color-slate-450: #94A3B8 !important;
+  --color-slate-400: #94A3B8 !important;
 }
 
 .dark-theme body {
